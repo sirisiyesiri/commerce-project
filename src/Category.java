@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class Category {
     private ArrayList<String> categoryName = new ArrayList<>(List.of("전자제품", "의류", "식품"));
@@ -80,28 +81,42 @@ public class Category {
         }
     }
 
-    public void printChoiceProduct(int categoryChoice, int productChoice) {
-        switch(categoryChoice) {
+//    public void printChoiceProduct(int categoryChoice, int productChoice) {
+//        switch(categoryChoice) {
+//            case 1:
+//                System.out.print("선택한 상품: ");
+//                System.out.printf("%-15s | %-10s | %-15s | 재고: " + electronicsList.get(productChoice-1).getStockQuantity() +"개",
+//                        electronicsList.get(productChoice-1).getProductName(), electronicsList.get(productChoice-1).getPrice(), electronicsList.get(productChoice-1).getDescription() );
+//                System.out.println();
+//                System.out.println();   // 반복 시 사용자 UI를 위해 한 번 더 줄바꿈
+//
+//
+//                break;
+//            case 2:
+//                System.out.printf("%-15s | %-10s | %-15s | 재고: " + clothesList.get(productChoice-1).getStockQuantity() +"개",
+//                        clothesList.get(productChoice-1).getProductName(), clothesList.get(productChoice-1).getPrice(), clothesList.get(productChoice-1).getDescription() );
+//                System.out.println();
+//                System.out.println();
+//                break;
+//            case 3:
+//                System.out.printf("%-15s | %-10s | %-15s | 재고: " + foodList.get(productChoice-1).getStockQuantity() +"개",
+//                        foodList.get(productChoice-1).getProductName(), foodList.get(productChoice-1).getPrice(), foodList.get(productChoice-1).getDescription() );
+//                System.out.println();
+//                System.out.println();
+//                break;
+//        }
+//    }
+
+    public Product getChoiceProductInformation(int categoryChoice, int productChoice) {
+        switch (categoryChoice) {
             case 1:
-                System.out.print("선택한 상품: ");
-                System.out.printf("%-15s | %-10s | %-15s | 재고: " + electronicsList.get(productChoice-1).getStockQuantity() +"개",
-                        electronicsList.get(productChoice-1).getProductName(), electronicsList.get(productChoice-1).getPrice(), electronicsList.get(productChoice-1).getDescription() );
-                System.out.println();
-                System.out.println();   // 반복 시 사용자 UI를 위해 한 번 더 줄바꿈
-                break;
+                return electronicsList.get(productChoice-1);
             case 2:
-                System.out.printf("%-15s | %-10s | %-15s | 재고: " + clothesList.get(productChoice-1).getStockQuantity() +"개",
-                        clothesList.get(productChoice-1).getProductName(), clothesList.get(productChoice-1).getPrice(), clothesList.get(productChoice-1).getDescription() );
-                System.out.println();
-                System.out.println();
-                break;
+                return clothesList.get(productChoice-1);
             case 3:
-                System.out.printf("%-15s | %-10s | %-15s | 재고: " + foodList.get(productChoice-1).getStockQuantity() +"개",
-                        foodList.get(productChoice-1).getProductName(), foodList.get(productChoice-1).getPrice(), foodList.get(productChoice-1).getDescription() );
-                System.out.println();
-                System.out.println();
-                break;
+                return foodList.get(productChoice-1);
         }
+        return null;    // Optional 활용 생각해보기
     }
 
     public int getEachListSize(int categoryChoice) {

@@ -6,6 +6,7 @@ public class Main {
     public static void main(String[] args) {
         Category category = new Category();
         CommerceSystem commerceSystem = new CommerceSystem(category);
+        ShoppingCart shoppingCart = new ShoppingCart(category);
 
         while(true) {
             commerceSystem.start();
@@ -22,8 +23,14 @@ public class Main {
 
             System.out.println();
 
-            if(productChoice == 0) continue;
-            category.printChoiceProduct(categoryChoice, productChoice);
+            if(productChoice != 0) {
+//                category.printChoiceProduct(categoryChoice, productChoice);
+                commerceSystem.printChoiceProduct(categoryChoice, productChoice);
+                int addShoppingCart = commerceSystem.inputAddShopping();
+                if(addShoppingCart == 1) {
+                    shoppingCart.addShoppingCart(categoryChoice, productChoice);
+                }
+            }
         }
     }
 }

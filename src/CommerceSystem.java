@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+// 상품 관리 및 사용자 입력 처리 class
 public class CommerceSystem {
     Scanner scanner = new Scanner(System.in);
     Category category = new Category();
@@ -57,6 +58,34 @@ public class CommerceSystem {
             } catch (IllegalArgumentException e2) {
                 System.out.println(e2.getMessage());
                 System.out.println();
+            }
+        }
+    }
+
+    public void printChoiceProduct(int categoryChoice, int productChoice) {
+        Product product = category.getChoiceProductInformation(categoryChoice, productChoice);
+        System.out.print("선택한 상품: ");
+        System.out.printf("%-15s | %-10s | %-15s | 재고: " + product.getStockQuantity() +"개", product.getProductName(), product.getPrice(), product.getDescription() );
+        System.out.println();
+        System.out.println();   // 반복 시 사용자 UI를 위해 한 번 더 줄바꿈
+    }
+
+    public int inputAddShopping() {
+        System.out.println("위 상품을 장바구니에 추가하시겠습니까?");
+        System.out.printf("%-8s %-8s", "1. 확인", "2. 취소");
+        System.out.println();
+        while(true) {
+            System.out.print("선택 : ");
+            try {
+                int addShoppingListChoice = scanner.nextInt();
+                if(addShoppingListChoice != 1 && addShoppingListChoice != 2) {
+                    throw new IllegalArgumentException("잘못된 입력입니다.");
+                }
+                return addShoppingListChoice;
+            } catch (InputMismatchException e1) {
+                System.out.println("잘못된 입력입니다.");
+            } catch (IllegalArgumentException e2) {
+                System.out.println(e2.getMessage());
             }
         }
     }
