@@ -30,9 +30,28 @@ public class Main {
                     if(orderChoice == 1) {
                         commerceSystem.orderComplete();
                     }
-                } else {
+                } else if(categoryChoice == (commerceSystem.getCategoryCount()+2)) {
                     System.out.println("주문을 취소하였습니다.");
                     System.out.println();
+                }
+                else {
+                    int choiceManagerFunction = commerceSystem.ChoiceManagerFunction();
+
+                    if(choiceManagerFunction != 0) {
+                        switch (choiceManagerFunction) {
+                            case 1:
+                                commerceSystem.addCategoryProduct();
+                                break;
+                            case 2:
+                                commerceSystem.correctProduct();
+                                break;
+                            case 3:
+                                break;
+                            case 4:
+                                break;
+                            default:
+                        }
+                    }
                 }
 
             } else {
