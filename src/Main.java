@@ -46,8 +46,10 @@ public class Main {
                                 commerceSystem.correctProduct();
                                 break;
                             case 3:
+                                commerceSystem.deleteProduct();
                                 break;
                             case 4:
+                                commerceSystem.allProductStatus();
                                 break;
                             default:
                         }

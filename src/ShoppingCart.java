@@ -44,4 +44,8 @@ public class ShoppingCart {
         shoppingList.clear();
     }
 
+    public void deleteShoppingProduct(String productName) {
+        shoppingList.removeIf(p -> p.getProductName().equals(productName));
+    }
+
 }

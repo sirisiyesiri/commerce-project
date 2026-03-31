@@ -161,4 +161,10 @@ public class Category {
         }
     }
 
+    public void deleteProduct(String productName) {
+        electronicsList.removeIf(p -> p.getProductName().equals(productName));
+        clothesList.removeIf(p -> p.getProductName().equals(productName));
+        foodList.removeIf(p -> p.getProductName().equals(productName));
+    }
+
 }
