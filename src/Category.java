@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class Category {
     private ArrayList<String> categoryName = new ArrayList<>(List.of("전자제품", "의류", "식품"));
@@ -40,29 +37,29 @@ public class Category {
         return null;
     }
 
-    public Product getChoiceProductInformation(int categoryChoice, int productChoice) {
-        switch (categoryChoice) {
+    public List<Product> printfProductList(int categoryChoice, int choice) {
+        ArrayList<Product> arrayList = getCategoryList(categoryChoice);
+        List<Product> list = Collections.emptyList();   // 빈 리스트로 list 초기화
+        switch (choice) {
             case 1:
-                return electronicsList.get(productChoice-1);
+                list = arrayList.stream()
+                        .toList();
+                break;
             case 2:
-                return clothesList.get(productChoice-1);
+                System.out.println("[ 100만원 이하 상품 목록 ]");
+                list= arrayList.stream()
+                        .filter(product -> !product.upper100())
+                        .toList();
+                break;
             case 3:
-                return foodList.get(productChoice-1);
-        }
-        return null;    // Optional 활용 생각해보기
-    }
+                System.out.println("[ 100만원 초과 상품 목록 ]");
+                list= arrayList.stream()
+                        .filter(product -> product.upper100())
+                        .toList();
+                break;
 
-    public int getEachListSize(int categoryChoice) {
-        switch(categoryChoice) {
-            case 1:
-                return electronicsList.size();
-            case 2:
-                return clothesList.size();
-            case 3:
-                return foodList.size();
-            default:
-                return 0;
         }
+        return list;
     }
 
     public void addProduct(int addProductCategory, Product product) {
@@ -166,5 +163,7 @@ public class Category {
         clothesList.removeIf(p -> p.getProductName().equals(productName));
         foodList.removeIf(p -> p.getProductName().equals(productName));
     }
+
+
 
 }

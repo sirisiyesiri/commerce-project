@@ -1,8 +1,7 @@
 import com.sun.security.jgss.GSSUtil;
 
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 // 상품 관리 및 사용자 입력 처리 class
 public class CommerceSystem {
@@ -69,13 +68,13 @@ public class CommerceSystem {
     }
 
 
-    public int inputProductChoice(int categoryChoice) {  // 상품 번호 선택
+    public int inputProductChoice(int listSize) {// 상품 번호 선택
         while(true) {
             try {
                 System.out.print("선택하신 상품 번호를 입력해주세요(0입력 시 뒤로가기) : ");
                 int productChoice = Integer.parseInt(scanner.nextLine());
-                if(productChoice < 0 || productChoice > category.getEachListSize(categoryChoice)) {    // 각 productList 사이즈를 반환하는 함수를 이용해 최대값 관련 조건을 출력해야겠음.
-                    throw new IllegalArgumentException("잘못된 상품 번호입니다.(0 ~ " + category.getEachListSize(categoryChoice) + " 사이의 숫자를 입력하세요)");
+                if(productChoice < 0 || productChoice > listSize) {    // 최대값 관련 조건을 출력.
+                    throw new IllegalArgumentException("잘못된 상품 번호입니다.(0 ~ " + listSize + " 사이의 숫자를 입력하세요)");
                 }
                 return productChoice;
             } catch (NumberFormatException e1) {
@@ -87,28 +86,60 @@ public class CommerceSystem {
         }
     }
 
-    public void printProductList(int categoryChoice) {  // category별 list 출력
-        ArrayList<Product> arrayList = category.getCategoryList(categoryChoice);
-        int i = 1;
-
+    public int inputCategoryMenu(int categoryChoice) {
         System.out.println("[ " + category.getCategoryName(categoryChoice) + " 카테고리 ]");
-        for(Product product : arrayList) {
-            System.out.printf(i + ". %-15s | %-10s | %-15s | 재고: " + product.getStockQuantity() + "개\n", product.getProductName(), product.getPrice(), product.getDescription());
-            // C처럼 문자열 자리 수 맞춰서 출력하는 방법 예시: printf("%10s", "hello");
-            // %10s = 오른쪽 정렬(기본), %-10s = 왼쪽 정렬
-            i += 1;
-        }
-        if(arrayList.isEmpty()) {
-            System.out.println("상품이 없습니다.");
-        }
+        System.out.println("1. 전체 상품 보기");
+        System.out.println("2. 가격대별 필터링 (100만원 이하)");
+        System.out.println("3. 가격대별 필터링 (100만원 초과)");
         System.out.println("0. 뒤로가기");
-        System.out.println();
+
+        while(true) {
+            try {
+                System.out.print("선택 : ");
+                int choice = Integer.parseInt(scanner.nextLine());
+                System.out.println();
+                if(choice < 0 || choice > 3) {
+                    throw new IllegalArgumentException("잘못된 번호 입력입니다.(1 ~ 3 사이의 숫자를 입력하세요)");
+                }
+                return choice;
+            } catch (NumberFormatException e1) {
+                System.out.println("정수를 입력해주세요.");
+            } catch (IllegalArgumentException e2) {
+                System.out.println(e2.getMessage());
+            }
+        }
     }
 
-    public void printChoiceProduct(int categoryChoice, int productChoice) {
-        Product product = category.getChoiceProductInformation(categoryChoice, productChoice);
+    public Product printProductList(int categoryChoice, int choice) {// category별 list 출력
+        List<Product> list = category.printfProductList(categoryChoice, choice);
+
+        int i = 1;
+        for(Product product : list) {
+            System.out.printf(i++ + ". %-15s | %-10s | %-15s | 재고: %d개\n", product.getProductName(), product.getPrice(), product.getDescription(), product.getStockQuantity());
+            // C처럼 문자열 자리 수 맞춰서 출력하는 방법 예시: printf("%10s", "hello");
+            // %10s = 오른쪽 정렬(기본), %-10s = 왼쪽 정렬
+        }
+
+        if(list.isEmpty()) {
+            System.out.println("상품이 없습니다.");
+        }
+
+        System.out.println("0. 뒤로가기");
+        System.out.println();
+
+        int productChoice = inputProductChoice(list.size());
+
+        if(productChoice != 0) {
+            printChoiceProduct(list, productChoice);
+            return list.get(productChoice-1);
+        }
+        return null;
+    }
+
+    public void printChoiceProduct(List<Product> list, int productChoice) {
+        Product product = list.get(productChoice-1);
         System.out.print("선택한 상품: ");
-        System.out.printf("%-15s | %-10s | %-15s | 재고: " + product.getStockQuantity() +"개\n", product.getProductName(), product.getPrice(), product.getDescription() );
+        System.out.printf("%-15s | %-10s | %-15s | 재고: %d개\n", product.getProductName(), product.getPrice(), product.getDescription(), product.getStockQuantity());
         System.out.println();
     }
 
@@ -136,24 +167,23 @@ public class CommerceSystem {
         }
     }
 
-    public void addShoppingCart(int categoryChoice, int productChoice) {
-        Product product = category.getChoiceProductInformation(categoryChoice, productChoice);
-       while(true) {
-           try {
-               System.out.print("주문하시고 싶은 수량 : ");
-               int count = Integer.parseInt(scanner.nextLine());
-               if(count < 1 || count > product.getStockQuantity()) {
-                   throw new IllegalArgumentException("주문가능 수량 : 1 ~ " + product.getStockQuantity() + "개");
-               }
-               product.setCartCount(count);
-               shoppingCart.addShoppingCart(product);
-               return;
-           } catch (NumberFormatException e1) {
-               System.out.println("정수를 입력해주세요.");
-           } catch (IllegalArgumentException e2) {
-               System.out.println(e2.getMessage());
-           }
-       }
+    public void addShoppingCart(Product productChoice) {
+        while(true) {
+            try {
+                System.out.print("주문하시고 싶은 수량 : ");
+                int count = Integer.parseInt(scanner.nextLine());
+                if(count < 1 || count > productChoice.getStockQuantity()) {
+                    throw new IllegalArgumentException("주문가능 수량 : 1 ~ " + productChoice.getStockQuantity() + "개");
+                }
+                productChoice.setCartCount(count);
+                shoppingCart.addShoppingCart(productChoice);
+                return;
+            } catch (NumberFormatException e1) {
+                System.out.println("정수를 입력해주세요.");
+            } catch (IllegalArgumentException e2) {
+                System.out.println(e2.getMessage());
+            }
+        }
     }
 
     public int inputProductOrder() {
@@ -162,8 +192,7 @@ public class CommerceSystem {
 
         System.out.println("[ 장바구니 내역 ]");
         for(Product product : shoppingCart.getShoppingList()) {
-            System.out.printf("%-15s | %-10s | %-15s | 수량: " + product.getCartCount() +"개\n",
-                    product.getProductName(), product.getPrice(), product.getDescription());
+            System.out.printf("%-15s | %-10s | %-15s | 수량: %d개\n", product.getProductName(), product.getPrice(), product.getDescription(), product.getCartCount());
         }
         System.out.println();
 
@@ -192,12 +221,48 @@ public class CommerceSystem {
 
     }
 
-    public void orderComplete() {
+    public Grade inputGrade() {
+        System.out.println("고객 등급을 입력해주세요.");
+        System.out.printf("%-13s : 0%%할인\n", "1. BRONZE");
+        System.out.printf("%-13s : 5%%할인\n", "2. SILVER");
+        System.out.printf("%-13s : 10%%할인\n", "3. GOLD");
+        System.out.printf("%-13s : 15%%할인\n", "4. PLATINUM");
+
+        while(true) {
+            try{
+                System.out.print("고객 등급을 입력해주세요. : ");
+                int gradeChoice = Integer.parseInt(scanner.nextLine());
+                System.out.println();
+                if(gradeChoice < 1 || gradeChoice > 4) {
+                    throw new IllegalArgumentException("잘못된 번호 입력입니다.(1 ~ 4 사이의 숫자를 입력하세요)");
+                }
+                switch(gradeChoice) {
+                    case 1:
+                        return Grade.BRONZE;
+                    case 2:
+                        return Grade.SILVER;
+                    case 3:
+                        return Grade.GOLD;
+                    case 4:
+                        return Grade.PLATINUM;
+
+                }
+            } catch(NumberFormatException e1) {
+                System.out.println("정수를 입력해주세요.");
+            } catch(IllegalArgumentException e2) {
+                System.out.println(e2.getMessage());
+            }
+        }
+    }
+
+    public void orderComplete(Grade grade) {
         int index = 0;
-        System.out.println("주문이 완료되었습니다! 총 금액: " + shoppingCart.totalPrice() +"원");
+        System.out.println("주문이 완료되었습니다!");
+        System.out.println("할인 전 금액: " + shoppingCart.totalPrice() +"원");
+        System.out.println(grade.getGrade() + "등급 할인(" + grade.getPercent() + "%): -" + grade.discountPrice(shoppingCart.totalPrice()) + "원");
+        System.out.println("최종 결제 금액 : " + grade.apply(shoppingCart.totalPrice()) + "원");
         for(Product product : shoppingCart.getShoppingList()) {
-            System.out.println(product.getProductName() + "재고가 " + product.getStockQuantity() + "개 -> "
-                    + (product.getStockQuantity()-product.getCartCount()) + "개로 업데이트되었습니다.");
+            System.out.println(product.getProductName() + " 재고가 " + product.getProductName() + "개 → " + (product.getStockQuantity()-product.getCartCount()) + "개로 업데이트되었습니다.");
             shoppingCart.EditStockQuantity(index++, product.getCartCount());
         }
         shoppingCart.resetShoppingList();
@@ -271,7 +336,7 @@ public class CommerceSystem {
                     int addProductStockQuantity = Integer.parseInt(scanner.nextLine());
                     System.out.println();
 
-                    System.out.printf("%-15s | %-10s | %-15s | 재고 : " + addProductStockQuantity + "개\n", addProductName, (addProductPrice+"원"), addProductDescription);
+                    System.out.printf("%-15s | %-10s | %-15s | 재고 : %d개\n", addProductName, (addProductPrice+"원"), addProductDescription, addProductStockQuantity);
                     System.out.println();
 
                     System.out.println("위 정보로 상품을 추가하시겠습니까?");
@@ -308,7 +373,7 @@ public class CommerceSystem {
         Product product = category.searchProduct(correctProductName);   // product는 참조하고 있기 때문에
 
         if(product != null) {
-            System.out.printf("%-15s | %-10s | %-15s | 재고 : " + product.getStockQuantity() + "개\n", product.getProductName(), product.getPrice(), product.getDescription());
+            System.out.printf("현재 상품 정보 : %-15s | %-10s | %-15s | 재고 : %d개\n", product.getProductName(), product.getPrice(), product.getDescription(), product.getStockQuantity());
             System.out.println();
 
             System.out.println("수정할 항목을 선택해주세요 : ");
@@ -383,7 +448,7 @@ public class CommerceSystem {
         Product product = category.searchProduct(deleteProductName);   // product는 참조하고 있기 때문에
 
         if(product != null) {
-            System.out.printf("%-15s | %-10s | %-15s | 재고 : " + product.getStockQuantity() + "개\n", product.getProductName(), product.getPrice(), product.getDescription());
+            System.out.printf("현재 상품 정보 : %-15s | %-10s | %-15s | 재고 : %d개\n", product.getProductName(), product.getPrice(), product.getDescription(), product.getStockQuantity());
             System.out.println();
 
             while(true) {
@@ -424,7 +489,7 @@ public class CommerceSystem {
 
             System.out.println("[ " + category.getCategoryName(i) + " 카테고리 ]");
             for(Product product : list) {
-                System.out.printf("%-15s | %-10s | %-15s | 재고 : " + product.getStockQuantity() + "개\n", product.getProductName(), product.getPrice(), product.getDescription());
+                System.out.printf("%-15s | %-10s | %-15s | 재고 : %d개\n", product.getProductName(), product.getPrice(), product.getDescription(), product.getStockQuantity());
             }
             System.out.println();
         }
