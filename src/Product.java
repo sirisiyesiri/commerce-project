@@ -49,4 +49,9 @@ public class Product {
     public void setStockQuantity(int stockQuantity) {
         this.stockQuantity = stockQuantity;
     }
+
+    public boolean upper100() {
+        int intPrice = Integer.parseInt(this.price.replaceAll("[^0-9]", ""));
+        return intPrice > 1000000;
+    }
 }

@@ -1,7 +1,7 @@
 public class Customer {
     private String customerName;
     private String email;
-    private String grade = "일반";
+    private String grade = "BRONZE";
 
     Customer(String name, String email) {
         this.customerName = name;
