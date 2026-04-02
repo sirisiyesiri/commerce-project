@@ -38,6 +38,8 @@ public class Main {
                     if(orderChoice == 1) {
                         Grade grade = commerceSystem.inputGrade();  // 고객 등급 입력
                         commerceSystem.orderComplete(grade);    // 등급 별 할인 처리 후 주문 완료
+                    } else if(orderChoice == 2) {
+                        commerceSystem.cancelShoppingCartProduct(); // 장바구니 상품 취소
                     }
                 } else if(categoryChoice == (commerceSystem.getCategoryCount()+2)) {
                     System.out.println("주문을 취소하였습니다.");

@@ -45,4 +45,11 @@ public class ShoppingCart {
     public void deleteShoppingProduct(String productName) {
         shoppingList.removeIf(p -> p.getProductName().equals(productName));
     }
+
+    public Product searchProduct(String productName) {
+        return shoppingList.stream()
+                .filter(product -> product.getProductName().equals(productName))
+                .findFirst()
+                .orElse(null);
+    }
 }

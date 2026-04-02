@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.Stream;
 
 public class Category {
     private ArrayList<String> categoryName = new ArrayList<>(List.of("전자제품", "의류", "식품"));
@@ -77,85 +78,50 @@ public class Category {
     }
 
     public Product searchProduct(String searchProductName) {
-        for(Product product : electronicsList) {
-            if(product.getProductName().equals(searchProductName)) {
-                return product;
-            }
-        }
-        for (Product product : clothesList) {
-            if(product.getProductName().equals(searchProductName)) {
-                return product;
-            }
-        }
-        for(Product product : foodList) {
-            if(product.getProductName().equals(searchProductName)) {
-                return product;
-            }
-        }
-        return null;
+        return Stream.concat(
+                Stream.concat(electronicsList.stream(), clothesList.stream()),
+                foodList.stream()
+        )
+                .filter(product -> product.getProductName().equals(searchProductName))
+                .findFirst()
+                .orElse(null);
+
+        // Stream.concat(a, b) : 두 스트림 이어붙임
+        // .filter() : 조건에 맞는 것만 남김
+        // .findFirst() : 첫 번째 요소 Optional로 반환
+        // .orElse(null) : 값이 있으면 반환형(Product)으로 반환 없으면 null
     }
 
     public void resettingProductPrice(Product product, String newPrice) {
-        for(Product imsi : electronicsList) {
-            if(product == imsi) {
-                imsi.setPrice(newPrice);
-                return;
-            }
-        }
-        for(Product imsi : clothesList) {
-            if(product == imsi) {
-                imsi.setPrice(newPrice);
-                return;
-            }
-        }
-        for(Product imsi : foodList) {
-            if(product == imsi) {
-                imsi.setPrice(newPrice);
-                return;
-            }
-        }
+        Stream.concat(
+                Stream.concat(electronicsList.stream(), clothesList.stream()),
+                foodList.stream()
+        )
+                .filter(p -> p == product)
+                .findFirst()
+                .ifPresent(p -> p.setPrice(newPrice));
+
+        // .ifPresent : Optional로 받은 값이 존재하면 실행
     }
 
     public void resettingProductDescription(Product product, String newDescription) {
-        for (Product imsi : electronicsList) {
-            if (product == imsi) {
-                imsi.setDescription(newDescription);
-                return;
-            }
-        }
-        for (Product imsi : clothesList) {
-            if (product == imsi) {
-                imsi.setDescription(newDescription);
-                return;
-            }
-        }
-        for (Product imsi : foodList) {
-            if (product == imsi) {
-                imsi.setDescription(newDescription);
-                return;
-            }
-        }
+        Stream.concat(
+                Stream.concat(electronicsList.stream(), clothesList.stream()),
+                foodList.stream()
+        )
+                .filter(p -> p == product)
+                .findFirst()
+                .ifPresent(p -> p.setDescription(newDescription));
     }
 
     public void resettingProductStockQuantity(Product product, int newStockQuantity) {
-        for (Product imsi : electronicsList) {
-            if (product == imsi) {
-                imsi.setStockQuantity(newStockQuantity);
-                return;
-            }
-        }
-        for (Product imsi : clothesList) {
-            if (product == imsi) {
-                imsi.setStockQuantity(newStockQuantity);
-                return;
-            }
-        }
-        for (Product imsi : foodList) {
-            if (product == imsi) {
-                imsi.setStockQuantity(newStockQuantity);
-                return;
-            }
-        }
+        Stream.concat(
+                Stream.concat(electronicsList.stream(), clothesList.stream()),
+                foodList.stream()
+        )
+                .filter(p -> p == product)
+                .findFirst()
+                .ifPresent(p -> p.setStockQuantity(newStockQuantity));
     }
 
     public void deleteProduct(String productName) {

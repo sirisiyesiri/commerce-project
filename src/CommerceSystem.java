@@ -201,14 +201,14 @@ public class CommerceSystem {
         System.out.println(totalPrice + "원");
         System.out.println();
 
-        System.out.printf("%-8s %-8s", "1. 주문 확정", "2. 메인으로 돌아가기\n");
+        System.out.printf("%-8s %-8s %-8s\n", "1. 주문 확정", "2. 장바구니 취소" ,"3. 메인으로 돌아가기");
 
         while(true) {
             System.out.print("선택 : ");
             try {
                 int orderChoice = Integer.parseInt(scanner.nextLine());
                 System.out.println();   // 사용자 UI를 위한 줄바꿈
-                if(orderChoice != 1 && orderChoice != 2) {
+                if(orderChoice != 1 && orderChoice != 2 && orderChoice != 3) {
                     throw new IllegalArgumentException("잘못된 입력입니다.");
                 }
                 return orderChoice;
@@ -493,6 +493,48 @@ public class CommerceSystem {
             }
             System.out.println();
         }
+    }
+
+    public void cancelShoppingCartProduct() {
+        System.out.print("삭제할 상품명을 입력해주세요 : ");
+        String deleteProductName = scanner.nextLine();
+        System.out.println();
+
+        Product product = shoppingCart.searchProduct(deleteProductName);
+
+        if(product != null) {
+            System.out.printf("현재 장바구니에 담겨 있는 상품 정보 : %-15s | %-10s | %-15s | 수량 : %d개\n", product.getProductName(), product.getPrice(), product.getDescription(), product.getCartCount());
+            System.out.println();
+
+            while(true) {
+                try {
+                    System.out.println("위의 상품을 삭제하시겠습니까?");
+                    System.out.printf("%-8s %-8s\n", "1. 삭제", "2. 취소");
+
+                    System.out.print("선택 : ");
+                    int deleteProductChoice = Integer.parseInt(scanner.nextLine());
+                    if(deleteProductChoice != 1 && deleteProductChoice != 2) {
+                        throw new IllegalArgumentException("잘못된 입력입니다.");
+                    }
+                    if(deleteProductChoice == 1) {
+                        String productName = product.getProductName();
+                        shoppingCart.deleteShoppingProduct(productName);
+
+                        System.out.println(productName + " 상품이 삭제되었습니다.");
+                        System.out.println();
+                        break;
+                    }
+                } catch(NumberFormatException e1) {
+                    System.out.println("정수를 입력해주세요.");
+                } catch (IllegalArgumentException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
+        } else {
+            System.out.println("입력하신 상품이 존재하지 않습니다.");
+            return;
+        }
+
     }
 
 }
