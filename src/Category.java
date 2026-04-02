@@ -65,4 +65,106 @@ public class Category {
         }
     }
 
+    public void addProduct(int addProductCategory, Product product) {
+        switch(addProductCategory) {
+            case 1:
+                electronicsList.add(product);
+                break;
+            case 2:
+                clothesList.add(product);
+                break;
+            case 3:
+                foodList.add(product);
+                break;
+        }
+    }
+
+    public Product searchProduct(String searchProductName) {
+        for(Product product : electronicsList) {
+            if(product.getProductName().equals(searchProductName)) {
+                return product;
+            }
+        }
+        for (Product product : clothesList) {
+            if(product.getProductName().equals(searchProductName)) {
+                return product;
+            }
+        }
+        for(Product product : foodList) {
+            if(product.getProductName().equals(searchProductName)) {
+                return product;
+            }
+        }
+        return null;
+    }
+
+    public void resettingProductPrice(Product product, String newPrice) {
+        for(Product imsi : electronicsList) {
+            if(product == imsi) {
+                imsi.setPrice(newPrice);
+                return;
+            }
+        }
+        for(Product imsi : clothesList) {
+            if(product == imsi) {
+                imsi.setPrice(newPrice);
+                return;
+            }
+        }
+        for(Product imsi : foodList) {
+            if(product == imsi) {
+                imsi.setPrice(newPrice);
+                return;
+            }
+        }
+    }
+
+    public void resettingProductDescription(Product product, String newDescription) {
+        for (Product imsi : electronicsList) {
+            if (product == imsi) {
+                imsi.setDescription(newDescription);
+                return;
+            }
+        }
+        for (Product imsi : clothesList) {
+            if (product == imsi) {
+                imsi.setDescription(newDescription);
+                return;
+            }
+        }
+        for (Product imsi : foodList) {
+            if (product == imsi) {
+                imsi.setDescription(newDescription);
+                return;
+            }
+        }
+    }
+
+    public void resettingProductStockQuantity(Product product, int newStockQuantity) {
+        for (Product imsi : electronicsList) {
+            if (product == imsi) {
+                imsi.setStockQuantity(newStockQuantity);
+                return;
+            }
+        }
+        for (Product imsi : clothesList) {
+            if (product == imsi) {
+                imsi.setStockQuantity(newStockQuantity);
+                return;
+            }
+        }
+        for (Product imsi : foodList) {
+            if (product == imsi) {
+                imsi.setStockQuantity(newStockQuantity);
+                return;
+            }
+        }
+    }
+
+    public void deleteProduct(String productName) {
+        electronicsList.removeIf(p -> p.getProductName().equals(productName));
+        clothesList.removeIf(p -> p.getProductName().equals(productName));
+        foodList.removeIf(p -> p.getProductName().equals(productName));
+    }
+
 }

@@ -37,4 +37,16 @@ public class Product {
     public void setCartCount(int count) {
         this.cartCount = count;
     }
+
+    public void setPrice(String price) {
+        this.price=price;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
+    }
 }
